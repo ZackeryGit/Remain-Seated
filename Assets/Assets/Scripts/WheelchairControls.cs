@@ -249,6 +249,34 @@ public partial class @WheelchairControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""unlock"",
+            ""id"": ""329b752f-e014-45b5-9db5-9b726a90b5e4"",
+            ""actions"": [
+                {
+                    ""name"": ""space"",
+                    ""type"": ""Button"",
+                    ""id"": ""4f5573e2-7754-4d3c-afc5-55a4744080dc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""723b668d-4696-40cb-beb7-35ccb4c7692d"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""space"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -268,6 +296,9 @@ public partial class @WheelchairControls: IInputActionCollection2, IDisposable
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_KeyPress = m_Interaction.FindAction("KeyPress", throwIfNotFound: true);
+        // unlock
+        m_unlock = asset.FindActionMap("unlock", throwIfNotFound: true);
+        m_unlock_space = m_unlock.FindAction("space", throwIfNotFound: true);
     }
 
     ~@WheelchairControls()
@@ -277,6 +308,7 @@ public partial class @WheelchairControls: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Scroll.enabled, "This will cause a leak and performance issues, WheelchairControls.Scroll.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Look.enabled, "This will cause a leak and performance issues, WheelchairControls.Look.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Interaction.enabled, "This will cause a leak and performance issues, WheelchairControls.Interaction.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_unlock.enabled, "This will cause a leak and performance issues, WheelchairControls.unlock.Disable() has not been called.");
     }
 
     /// <summary>
@@ -828,6 +860,102 @@ public partial class @WheelchairControls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="InteractionActions" /> instance referencing this action map.
     /// </summary>
     public InteractionActions @Interaction => new InteractionActions(this);
+
+    // unlock
+    private readonly InputActionMap m_unlock;
+    private List<IUnlockActions> m_UnlockActionsCallbackInterfaces = new List<IUnlockActions>();
+    private readonly InputAction m_unlock_space;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "unlock".
+    /// </summary>
+    public struct UnlockActions
+    {
+        private @WheelchairControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public UnlockActions(@WheelchairControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "unlock/space".
+        /// </summary>
+        public InputAction @space => m_Wrapper.m_unlock_space;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_unlock; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="UnlockActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(UnlockActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="UnlockActions" />
+        public void AddCallbacks(IUnlockActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UnlockActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UnlockActionsCallbackInterfaces.Add(instance);
+            @space.started += instance.OnSpace;
+            @space.performed += instance.OnSpace;
+            @space.canceled += instance.OnSpace;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="UnlockActions" />
+        private void UnregisterCallbacks(IUnlockActions instance)
+        {
+            @space.started -= instance.OnSpace;
+            @space.performed -= instance.OnSpace;
+            @space.canceled -= instance.OnSpace;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="UnlockActions.UnregisterCallbacks(IUnlockActions)" />.
+        /// </summary>
+        /// <seealso cref="UnlockActions.UnregisterCallbacks(IUnlockActions)" />
+        public void RemoveCallbacks(IUnlockActions instance)
+        {
+            if (m_Wrapper.m_UnlockActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="UnlockActions.AddCallbacks(IUnlockActions)" />
+        /// <seealso cref="UnlockActions.RemoveCallbacks(IUnlockActions)" />
+        /// <seealso cref="UnlockActions.UnregisterCallbacks(IUnlockActions)" />
+        public void SetCallbacks(IUnlockActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UnlockActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UnlockActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="UnlockActions" /> instance referencing this action map.
+    /// </summary>
+    public UnlockActions @unlock => new UnlockActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "LeftWheel" which allows adding and removing callbacks.
     /// </summary>
@@ -902,5 +1030,20 @@ public partial class @WheelchairControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnKeyPress(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "unlock" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="UnlockActions.AddCallbacks(IUnlockActions)" />
+    /// <seealso cref="UnlockActions.RemoveCallbacks(IUnlockActions)" />
+    public interface IUnlockActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "space" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpace(InputAction.CallbackContext context);
     }
 }

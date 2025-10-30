@@ -163,6 +163,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "unlock",
+            "id": "329b752f-e014-45b5-9db5-9b726a90b5e4",
+            "actions": [
+                {
+                    "name": "space",
+                    "type": "Button",
+                    "id": "4f5573e2-7754-4d3c-afc5-55a4744080dc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "723b668d-4696-40cb-beb7-35ccb4c7692d",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "space",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
